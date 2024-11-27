@@ -1,0 +1,6 @@
+@ReadersAndRent_HostAddress = http://localhost:5238
+
+GET {{ReadersAndRent_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
