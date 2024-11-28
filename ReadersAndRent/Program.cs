@@ -1,3 +1,8 @@
+using ReadersAndRent.Interfaces;
+using ReadersAndRent.Service;
+using Microsoft.EntityFrameworkCore;
+using ReadersAndRent.DB;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,7 +13,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+builder.Services.AddScoped<IReaderService, ReaderService>();
+builder.Services.AddScoped<IHistoryService, HistoryService>();
+builder.Services.AddDbContext<DBCon>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TestDbString")), ServiceLifetime.Scoped);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowMicroServices", policy =>
+    {
+        policy.WithOrigins("http://localhost:5172") // Порт вашего API Gateway
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
