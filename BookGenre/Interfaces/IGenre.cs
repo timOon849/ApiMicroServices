@@ -7,7 +7,7 @@ namespace BookGenre.Interfaces
     {
         Task<IActionResult> GetallZhanrs();
         Task<IActionResult> CreateNewZhanr([FromBody] Genre newZhanr);
-        Task<IActionResult> UpdateBook(int ID_Zhanr, Genre zhanr);
+        Task<IActionResult> UpdateGenre(int ID_Zhanr, Genre zhanr);
         Task<IActionResult> DeleteZhanr(int ID_Zhanr);
     }
 }

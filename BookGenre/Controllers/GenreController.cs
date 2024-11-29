@@ -37,7 +37,7 @@ namespace BookGenre.Controllers
         [Route("UpdateZhanr")]
         public async Task<IActionResult> UpdateGenre(int ID_Zhanr, Genre zhanr)
         {
-            return await _zhanrService.UpdateBook(ID_Zhanr, zhanr);
+            return await _zhanrService.UpdateGenre(ID_Zhanr, zhanr);
         }
         //o Удаление жанра.
         [HttpDelete]

@@ -11,17 +11,17 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+ 
 var app = builder.Build();
 builder.Services.AddScoped<IReaderService, ReaderService>();
 builder.Services.AddScoped<IHistoryService, HistoryService>();
-builder.Services.AddDbContext<DBCon>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TestDbString")), ServiceLifetime.Scoped);
+builder.Services.AddDbContext<DBCon>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TestDbString1")), ServiceLifetime.Scoped);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowMicroServices", policy =>
+    options.AddPolicy("AllowApiMicroServices", policy =>
     {
-        policy.WithOrigins("http://localhost:5172") // Порт вашего API Gateway
+        policy.WithOrigins("http://localhost:5172")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });

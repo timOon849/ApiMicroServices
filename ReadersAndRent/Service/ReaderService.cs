@@ -35,7 +35,7 @@ namespace ReadersAndRent.Service
         }
 
         public async Task<IActionResult> BooksRentedByReader(int ID_Reader)
-        {
+        {/*
             var rentHistory = await _context.Rent.Where(r => r.ID_Reader == ID_Reader && r.Date_End == null).ToListAsync();
             var bookNames = new List<string>();
             foreach (var rent in rentHistory)
@@ -53,7 +53,8 @@ namespace ReadersAndRent.Service
             else
             {
                 return new OkObjectResult(bookNames);
-            }
+            }*/
+            return new OkObjectResult("");
         }
 
         public async Task<IActionResult> DeleteReader(int Id_Reader)

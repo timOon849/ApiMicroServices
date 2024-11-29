@@ -1,7 +1,5 @@
-using BookGenre.DB;
-using BookGenre.Service;
-using BookGenre.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using ReadersRent.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,29 +9,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IBook, BookService>();
-builder.Services.AddScoped<IGenre, GenreService>();
 builder.Services.AddDbContext<DBCon>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TestDbString")), ServiceLifetime.Scoped);
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowApiMicroServices", policy =>
-    {
-        policy.WithOrigins("http://localhost:5172") // Порт вашего API Gateway
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowReadersAndRent", policy =>
-    {
-        policy.WithOrigins("http://localhost:5238") // Порт вашего API Gateway
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
 
 var app = builder.Build();
 

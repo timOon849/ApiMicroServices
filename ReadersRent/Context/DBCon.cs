@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ReadersAndRent.Model;
+using ReadersRent.Model;
 
-
-namespace ReadersAndRent.DB
+namespace ReadersRent.Context
 {
     public class DBCon : DbContext
     {
@@ -10,7 +9,7 @@ namespace ReadersAndRent.DB
         {
 
         }
-        public DbSet<Readers> Readers { get; set; }
+        public DbSet<Reader> Reader { get; set; }
         public DbSet<Rent> Rent { get; set; }
     }
 }
