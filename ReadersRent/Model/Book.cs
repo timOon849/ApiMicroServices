@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BookGenre.Model
 {
-    public class Books
+    public class Book
     {
         [Key]
         public int ID_Book { get; set; }
@@ -14,10 +14,6 @@ namespace BookGenre.Model
         public DateTime YearOfIzd { get; set; }
         public string? Description { get; set; }
 
-        public string? ImageUrl { get; set; }
-
         public int ID_Genre { get; set; }
-        [ForeignKey("ID_Genre")]
-        public virtual Genre Genre { get; set; }
     }
 }

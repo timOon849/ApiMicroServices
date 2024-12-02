@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ImageApi.Model
+namespace ApiMicroServices.DB
 {
     public class Image
     {

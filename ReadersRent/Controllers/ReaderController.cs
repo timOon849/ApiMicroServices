@@ -24,7 +24,7 @@ namespace ReadersRent.Controllers
         }
 
         [HttpGet]
-        [Route("getAllReaders")]
+        [Route("GetAllReaders")]
         public async Task<IActionResult> GetAllReaders()
         {
             return await _readersService.GetAllReaders();
@@ -56,6 +56,13 @@ namespace ReadersRent.Controllers
         public async Task<IActionResult> BooksRentedByReader(int ID_Reader)
         {
             return await _readersService.BooksRentedByReader(ID_Reader);
+        }
+
+        [HttpPut]
+        [Route("UpdateReaderImage")]
+        public async Task<IActionResult> UpdateReaderImage(int ID_Reader, IFormFile file)
+        {
+            return await _readersService.UpdateReaderImage(ID_Reader, file);
         }
     }
 }

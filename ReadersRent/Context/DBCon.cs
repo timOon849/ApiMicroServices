@@ -11,5 +11,6 @@ namespace ReadersRent.Context
         }
         public DbSet<Reader> Reader { get; set; }
         public DbSet<Rent> Rent { get; set; }
+        public DbSet<ReaderBook> ReaderBook { get; set; }
     }
 }

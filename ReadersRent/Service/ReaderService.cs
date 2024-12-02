@@ -1,19 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BookGenre.Model;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReadersRent.Context;
 using ReadersRent.Interfaces;
 using ReadersRent.Model;
+using System.Net.Http.Headers;
 
 namespace ReadersRent.Service
 {
     public class ReaderService : IReader
     {
         private readonly DBCon _context;
-        private readonly BookService _bookService;
-        public ReaderService(DBCon context, BookService bookService)
+        private readonly HttpClient _httpClient;
+        public ReaderService(DBCon context, IHttpClientFactory httpClientFactory)
         {
             _context = context;
-            _bookService = bookService;
+            _httpClient = httpClientFactory.CreateClient();
         }
 
         public async Task<IActionResult> AddReader(Reader newReader)
@@ -39,30 +41,16 @@ namespace ReadersRent.Service
         public async Task<IActionResult> BooksRentedByReader(int ID_Reader)
         {
             // Получаем все активные аренды для этого читателя
-            var rentHistory = await _context.Rent
-                .Where(r => r.ID_Reader == ID_Reader && r.Date_End == null)
-                .ToListAsync();
+            var rentHistory = await _context.ReaderBook.Where(e => e.ID_Reader == ID_Reader).ToListAsync();
+            var bookIds = rentHistory.Select(e => e.ID_Book).ToList();
 
-            var bookNames = new List<string>();
-
-            foreach (var rent in rentHistory)
-            {
-                // Используем BookService для получения данных о книге по ID
-                var book = await _bookService.GetBookByIdAsync(rent.ID_Book);
-
-                //if (book != null)
-                //{
-                //    bookNames.Add(book.Name); // Добавляем название книги в список
-                //}
-            }
-
-            if (!bookNames.Any()) // Если список пуст, возвращаем ошибку
-            {
-                return new BadRequestObjectResult("Книги не найдены для данного читателя.");
-            }
+            var response = await _httpClient.GetAsync("http://localhost:5205/api/Book/GetAllBooks");
+            response.EnsureSuccessStatusCode();
+            var apiResponse = await response.Content.ReadFromJsonAsync<Book[]>();
+            var result = apiResponse.Where(b => bookIds.Contains(b.ID_Book)).ToArray();
 
             // Возвращаем список названий книг
-            return new OkObjectResult(bookNames);
+            return new OkObjectResult(result);
         }
 
         public async Task<IActionResult> DeleteReader(int Id_Reader)
@@ -120,6 +108,33 @@ namespace ReadersRent.Service
 
                 await _context.SaveChangesAsync();
                 return new OkObjectResult(reader);
+            }
+        }
+
+        public async Task<IActionResult> UpdateReaderImage(int ID_Reader, IFormFile image)
+        {
+            var tecReader = await _context.Reader.FindAsync(ID_Reader);
+
+            if (tecReader != null)
+            {
+                using var ms = new MemoryStream();
+                await image.CopyToAsync(ms);
+                var bytes = ms.ToArray();
+                var content = new MultipartFormDataContent();
+                var byteContent = new ByteArrayContent(bytes);
+                byteContent.Headers.ContentType = MediaTypeHeaderValue.Parse(image.ContentType);
+                content.Add(byteContent, "file", image.FileName);
+                var response = await _httpClient.PostAsync("http://localhost:5195/api/Image/CreateImage", content);
+                response.EnsureSuccessStatusCode();
+                var responseData = await response.Content.ReadFromJsonAsync<Image>();
+                var imageUrl = "http://localhost:5195/api/Image/GetImage/" + responseData!.ImageID;
+                tecReader.ImageUrl = imageUrl;
+                await _context.SaveChangesAsync();
+                return new OkObjectResult(tecReader);
+            }
+            else
+            {
+                return new BadRequestObjectResult("Книга с данным ID не найдена");
             }
         }
     }

@@ -11,5 +11,6 @@ namespace ReadersRent.Interfaces
         Task<IActionResult> UpdateReader(int Id, Reader updateReader);
         Task<IActionResult> DeleteReader(int Id_Reader);
         Task<IActionResult> BooksRentedByReader(int ID_Reader);
+        Task<IActionResult> UpdateReaderImage([FromQuery] int ID_Reader, [FromBody] IFormFile file);
     }
 }

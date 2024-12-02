@@ -9,6 +9,7 @@ namespace BookGenre.Interfaces
         Task<IActionResult> GetInfoByID(int ID_Book);
         Task<IActionResult> CreateNewBook(Books newBook);
         Task<IActionResult> UpdateBook([FromQuery] int ID_Book, [FromBody] Books UpdateBook);
+        Task<IActionResult> UpdateBookImage([FromQuery] int ID_Book, [FromBody] IFormFile image);
         Task<IActionResult> DeleteBook(int ID_Book);
         Task<IActionResult> GetBooksByZhanr(string Namezhanr);
         Task<IActionResult> GetBookNameAuthor(string? Authorbook, string? Namebook);

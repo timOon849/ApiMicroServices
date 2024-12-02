@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ReadersRent.Model
+namespace ApiMicroServices.DB
 {
     public class Reader
     {

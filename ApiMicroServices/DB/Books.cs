@@ -18,14 +18,4 @@ namespace ApiMicroServices.DB
         public int ID_Genre { get; set; }
         public Genre Genre { get; set; }
     }
-    public class ApiResponse
-    {
-        public List<Books> Books { get; set; }
-        public bool Status { get; set; }
-    }
-
-    public class BookResponse
-    {
-        public Books Books { get; set; }
-    }
 }

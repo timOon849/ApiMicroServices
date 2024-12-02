@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IBook, BookService>();
 builder.Services.AddScoped<IGenre, GenreService>();
 builder.Services.AddDbContext<DBCon>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TestDbString")), ServiceLifetime.Scoped);
+builder.Services.AddHttpClient();
 
 builder.Services.AddCors(options =>
 {

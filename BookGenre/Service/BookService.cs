@@ -3,15 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 using BookGenre.Interfaces;
 using BookGenre.DB;
 using Microsoft.EntityFrameworkCore;
+using BookGenre.Migrations;
+using System.Net.Http.Headers;
 
 namespace BookGenre.Service
 {
     public class BookService : IBook
     {
         private readonly DBCon _context;
-        public BookService(DBCon context)
+        private readonly HttpClient _httpClient;
+        public BookService(DBCon context, IHttpClientFactory httpClientFactory)
         {
             _context = context;
+            _httpClient = httpClientFactory.CreateClient();
         }
         public async Task<IActionResult> CreateNewBook(Books newBook)
         {
@@ -130,6 +134,32 @@ namespace BookGenre.Service
                 {
                     return new BadRequestObjectResult("Не удается онаружить жанр с данным ID");
                 }
+            }
+            else
+            {
+                return new BadRequestObjectResult("Книга с данным ID не найдена");
+            }
+        }
+        public async Task<IActionResult> UpdateBookImage(int ID_Book, IFormFile image)
+        {
+            var tecBook = await _context.Books.FindAsync(ID_Book);
+
+            if (tecBook != null)
+            {
+                using var ms = new MemoryStream();
+                await image.CopyToAsync(ms);
+                var bytes = ms.ToArray();
+                var content = new MultipartFormDataContent();
+                var byteContent = new ByteArrayContent(bytes);
+                byteContent.Headers.ContentType = MediaTypeHeaderValue.Parse(image.ContentType);
+                content.Add(byteContent, "file", image.FileName);
+                var response = await _httpClient.PostAsync("http://localhost:5195/api/Image/CreateImage", content);
+                response.EnsureSuccessStatusCode();
+                var responseData = await response.Content.ReadFromJsonAsync<Image>();
+                var imageUrl = "http://localhost:5195/api/Image/GetImage/" + responseData!.ImageID;
+                tecBook.ImageUrl = imageUrl;
+                await _context.SaveChangesAsync();
+                return new OkObjectResult(tecBook);
             }
             else
             {

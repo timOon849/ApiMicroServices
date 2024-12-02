@@ -9,9 +9,4 @@ namespace ApiMicroServices.DB
 
         public string? Name_Genre { get; set; }
     }
-    public class APIResponce
-    {
-        public List<Genre> Genre { get; set; }
-        public bool Status { get; set; }
-    }
 }

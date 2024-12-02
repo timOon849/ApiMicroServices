@@ -9,11 +9,11 @@ namespace ReadersRent.Service
     public class RentService : IRent
     {
         private readonly DBCon _context;
-        private readonly BookService _bookService;
-        public RentService(DBCon context, BookService bookService)
+        private readonly HttpClient _httpClient;
+        public RentService(DBCon context, IHttpClientFactory httpClientFactory)
         {
             _context = context;
-            _bookService = bookService;
+            _httpClient = httpClientFactory.CreateClient();
         }
 
         public async Task<IActionResult> AddNewRent(int srok, int Id_Book, int IdReader)
@@ -41,7 +41,7 @@ namespace ReadersRent.Service
         public async Task<IActionResult> GetRentHistoryForBook(int bookId)
         {
             // Получаем информацию о книге через внешний API (BookService)
-            var book = await _bookService.GetBookByIdAsync(bookId);
+            var book = await _context.ReaderBook.Include(e => e.ID_Book == bookId).ToListAsync();
 
             // Проверяем, если книга не найдена в внешнем API
             if (book == null)

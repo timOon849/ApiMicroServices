@@ -45,6 +45,13 @@ namespace BookGenre.Controllers
             return await _bookService.UpdateBook(ID_Book, book);
         }
 
+        [HttpPut]
+        [Route("UpdateBookImage")]
+        public async Task<IActionResult> UpdateBookImage(int ID_Book, IFormFile image)
+        {
+            return await _bookService.UpdateBookImage(ID_Book, image);
+        }
+
         [HttpDelete]
         [Route("DeleteBook")]
         public async Task<IActionResult> DeleteBook(int ID_Book)
