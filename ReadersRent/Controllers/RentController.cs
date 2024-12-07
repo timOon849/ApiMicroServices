@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ReadersRent.Interfaces;
+using ReadersRent.Model;
 
 namespace ReadersRent.Controllers
 {
@@ -16,21 +17,21 @@ namespace ReadersRent.Controllers
         //o Аренда книги читателем(с указанием срока аренды).
         [HttpPost]
         [Route("AddNewRent")]
-        public async Task<IActionResult> AddNewRent(int srok, int Id_Book, int IdReader)
+        public async Task<IActionResult> AddNewRent(Rent newRent)
         {
-            return await _historyService.AddNewRent(srok, Id_Book, IdReader);
+            return await _historyService.AddNewRent(newRent);
         }
         //o Возврат арендованной книги.
-        [HttpPost]
-        [Route("ReturnBook")]
-        public async Task<IActionResult> ReturnBook(int ID_History)
+        [HttpPut]
+        [Route("ReturnBook/{ID_Rent}")]
+        public async Task<IActionResult> ReturnBook(int ID_Rent)
         {
-            return await _historyService.ReturnBook(ID_History);
+            return await _historyService.ReturnBook(ID_Rent);
         }
 
         //o   Получение истории аренды книг для конкретного читателя.
         [HttpGet]//должно работать
-        [Route("RentHistoryForReader")]
+        [Route("RentHistoryForReader/{Id_Reader}")]
         public async Task<IActionResult> RentHistoryForReader(int Id_Reader)
         {
             return await _historyService.RentHistoryForReader(Id_Reader);
@@ -43,7 +44,7 @@ namespace ReadersRent.Controllers
             return await _historyService.GetCurrentRentals();
         }
         [HttpGet]
-        [Route("GetRentHistoryForBook")]
+        [Route("GetRentHistoryForBook/{idbook}")]
         public async Task<IActionResult> GetRentHistoryForBook(int idbook)
         {
             return await _historyService.GetRentHistoryForBook(idbook);

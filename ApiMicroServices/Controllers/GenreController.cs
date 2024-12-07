@@ -89,12 +89,12 @@ namespace ApiMicroServices.Controllers
         }
 
         [HttpPut]
-        [Route("UpdateGenre")] //РАБОТАЕТ
-        public async Task<IActionResult> UpdateGenre([FromBody] Genre UpdateZhanr)
+        [Route("UpdateGenre/{ID_Zhanr}")] //РАБОТАЕТ
+        public async Task<IActionResult> UpdateGenre(int ID_Zhanr, [FromBody] Genre UpdateZhanr)
         {
             try
             {
-                var response = await _httpClient.PutAsJsonAsync("http://localhost:5205/api/Genre/UpdateBook", UpdateZhanr);
+                var response = await _httpClient.PutAsJsonAsync($"http://localhost:5205/api/Genre/UpdateGenre/{ID_Zhanr}", UpdateZhanr);
                 response.EnsureSuccessStatusCode();
                 var result = await response.Content.ReadAsStringAsync();
                 return Ok($"Жанр с ID {UpdateZhanr.ID_Genre} успешно обновлен.");

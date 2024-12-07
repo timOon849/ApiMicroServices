@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BookGenre.Model;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReadersRent.Context;
 using ReadersRent.Interfaces;
@@ -10,21 +11,23 @@ namespace ReadersRent.Service
     {
         private readonly DBCon _context;
         private readonly HttpClient _httpClient;
+        public Book book;
         public RentService(DBCon context, IHttpClientFactory httpClientFactory)
         {
             _context = context;
             _httpClient = httpClientFactory.CreateClient();
+
         }
 
-        public async Task<IActionResult> AddNewRent(int srok, int Id_Book, int IdReader)
+        public async Task<IActionResult> AddNewRent(Rent newRent)
         {
             var rent = new Rent()
             {
                 Date_Start = DateTime.Now,
                 Date_End = null,
-                Srok = srok,
-                ID_Book = Id_Book,
-                ID_Reader = IdReader,
+                Srok = newRent.Srok,
+                ID_Book = newRent.ID_Book,
+                ID_Reader = newRent.ID_Reader,
 
             };
             await _context.AddAsync(rent);
@@ -34,14 +37,21 @@ namespace ReadersRent.Service
 
         public async Task<IActionResult> GetCurrentRentals()
         {
-            var currentRentals = await _context.Rent.Where(r => r.Date_End == null).ToListAsync();
-            return new OkObjectResult(currentRentals);
+            var rents = await _context.Rent.ToListAsync();
+            if (rents != null)
+            {
+                return new OkObjectResult(rents);
+            }
+            else
+            {
+                return new BadRequestObjectResult("Аренд не обнаружено");
+            }
         }
 
         public async Task<IActionResult> GetRentHistoryForBook(int bookId)
         {
             // Получаем информацию о книге через внешний API (BookService)
-            var book = await _context.ReaderBook.Include(e => e.ID_Book == bookId).ToListAsync();
+            var book = await _context.ReaderBook.Where(e => e.ID_Book == bookId).ToListAsync();
 
             // Проверяем, если книга не найдена в внешнем API
             if (book == null)
@@ -78,11 +88,11 @@ namespace ReadersRent.Service
             }
         }
 
-        public async Task<IActionResult> ReturnBook(int ID_History)
+        public async Task<IActionResult> ReturnBook(int ID_Rent)
         {
-            var rentHistory = await _context.Rent.FindAsync(ID_History);
+            var rentHistory = await _context.Rent.FindAsync(ID_Rent);
 
-            if (rentHistory == null || rentHistory.Date_End != null)
+            if (rentHistory == null)
             {
                 return new BadRequestObjectResult("Информация об аренде не найдена");
             }

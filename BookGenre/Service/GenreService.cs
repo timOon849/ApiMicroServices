@@ -28,7 +28,7 @@ namespace BookGenre.Service
 
         public async Task<IActionResult> DeleteZhanr(int ID_Zhanr)
         {
-            var tecZhanr = await _context.Books.FindAsync(ID_Zhanr);
+            var tecZhanr = await _context.Genre.FindAsync(ID_Zhanr);
             if (tecZhanr != null)
             {
                 _context.Remove(tecZhanr);

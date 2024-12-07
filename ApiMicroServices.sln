@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookGenre", "BookGenre\Book
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadersRent", "ReadersRent\ReadersRent.csproj", "{9FE47562-9B2A-43EE-B7AA-A716BBA83DCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageApi", "ImageApi\ImageApi.csproj", "{DFEE1164-1331-4183-B955-B3C19330F479}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageApi", "ImageApi\ImageApi.csproj", "{DFEE1164-1331-4183-B955-B3C19330F479}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

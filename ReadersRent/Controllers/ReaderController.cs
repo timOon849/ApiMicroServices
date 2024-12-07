@@ -31,14 +31,14 @@ namespace ReadersRent.Controllers
         }
 
         [HttpGet]
-        [Route("GetReaderInfo")]
+        [Route("GetReaderInfo/{Id_Reader}")]
         public async Task<IActionResult> GetReaderInfo(int Id_Reader)
         {
             return await _readersService.GetReaderInfo(Id_Reader);
         }
 
         [HttpPut]
-        [Route("UpdateReader")]
+        [Route("UpdateReader/{Id}")]
         public async Task<IActionResult> UpdateReader(int Id, Reader updateReader)
         {
             return await _readersService.UpdateReader(Id, updateReader);

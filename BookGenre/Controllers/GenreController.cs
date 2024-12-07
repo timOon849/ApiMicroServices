@@ -34,14 +34,14 @@ namespace BookGenre.Controllers
 
         //o   Редактирование жанра.
         [HttpPut]
-        [Route("UpdateZhanr")]
+        [Route("UpdateGenre/{ID_Zhanr}")]
         public async Task<IActionResult> UpdateGenre(int ID_Zhanr, Genre zhanr)
         {
             return await _zhanrService.UpdateGenre(ID_Zhanr, zhanr);
         }
         //o Удаление жанра.
         [HttpDelete]
-        [Route("DeleteZhanr")]
+        [Route("DeleteZhanr/{ID_Zhanr}")]
         public async Task<IActionResult> DeleteZhanr(int ID_Zhanr)
         {
             return await _zhanrService.DeleteZhanr(ID_Zhanr);
