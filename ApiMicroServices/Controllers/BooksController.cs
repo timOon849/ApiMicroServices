@@ -1,5 +1,6 @@
 ﻿using ApiMicroServices.DB;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace ApiMicroServices.Controllers
@@ -238,12 +239,12 @@ namespace ApiMicroServices.Controllers
         }
 
         [HttpGet]
-        [Route("api/Books/BooksPagination")]
-        public async Task<IActionResult> BooksPagination([FromQuery] int page, [FromQuery] int pageSize)
+        [Route("BooksPagination")]
+        public async Task<IActionResult> BooksPagination( int page, int pageSize)
         {
             try
             {
-                var response = await _httpClient.GetAsync("http://localhost:5205/api/Book/BooksPagination");
+                var response = await _httpClient.GetAsync($"http://localhost:5205/api/Book/BooksPagination"); 
                 response.EnsureSuccessStatusCode();
 
                 // Десериализация в объект ApiResponse
@@ -266,6 +267,48 @@ namespace ApiMicroServices.Controllers
             }
 
 
+        }
+        [HttpPut]
+        [Route("UpdateBookImage/{ID_Book}")]
+        public async Task<IActionResult> UpdateReaderImage(int ID_Book, IFormFile image)
+        {
+            if (image == null || image.Length == 0)
+            {
+                return BadRequest("Изображение не было предоставлено.");
+            }
+
+            // Здесь вы можете добавить логику для поиска читателя по ID_Reader,
+            // если это необходимо, но без доступа к базе данных.
+
+            // Пример, как можно использовать ID_Reader
+            // var reader = FindReaderById(ID_Reader);
+            // if (reader == null)
+            // {
+            //     return NotFound("Читатель с данным ID не найден.");
+            // }
+
+            using var ms = new MemoryStream();
+            await image.CopyToAsync(ms);
+            var bytes = ms.ToArray();
+            var content = new MultipartFormDataContent();
+            var byteContent = new ByteArrayContent(bytes);
+            byteContent.Headers.ContentType = MediaTypeHeaderValue.Parse(image.ContentType);
+            content.Add(byteContent, "file", image.FileName);
+
+            // Вызов API другого проекта
+            var response = await _httpClient.PostAsync("http://localhost:5195/api/Image/CreateImage", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                return StatusCode((int)response.StatusCode, "Ошибка при загрузке изображения.");
+            }
+
+            var responseData = await response.Content.ReadFromJsonAsync<Image>();
+            var imageUrl = "http://localhost:5195/api/Image/GetImage/" + responseData!.ImageID;
+
+            // Здесь вы можете сохранить imageUrl в памяти, в кэше или другом месте,
+            // если это необходимо, но без базы данных.
+
+            return Ok(new { ImageUrl = imageUrl });
         }
     }
 }
