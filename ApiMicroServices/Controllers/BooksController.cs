@@ -75,13 +75,13 @@ namespace ApiMicroServices.Controllers
         }
 
         [HttpGet]
-        [Route("GetBookNameAuthor/{Authorbook}/{Name}")] //РАБОТАЕТ
+        [Route("GetBookNameAuthor")] //РАБОТАЕТ
         public async Task<IActionResult> GetBookNameAuthor(string Authorbook, string Namebook)
         {
             try
             {
                 // Выполняем запрос с передачей параметров Author и Name через маршрут
-                var response = await _httpClient.GetAsync($"http://localhost:5205/api/Book/GetBookNameAuthor/{Authorbook}/{Namebook}");
+                var response = await _httpClient.GetAsync($"http://localhost:5205/api/Book/GetBookNameAuthor");
                 response.EnsureSuccessStatusCode();
 
                 // Десериализация ответа в объект с одним свойством books
@@ -214,12 +214,12 @@ namespace ApiMicroServices.Controllers
         }
 
         [HttpGet]
-        [Route("api/books")]
-        public async Task<IActionResult> GetBooks([FromQuery] string? Name, [FromQuery] string? Author, [FromQuery] int? zhanr, [FromQuery] DateTime? year)
+        [Route("SearchOrFilter")]
+        public async Task<IActionResult> SearchOrFilter([FromQuery] string? Author, [FromQuery] int? zhanr, [FromQuery] DateTime? year)
         {
             try
             {
-                var response = await _httpClient.GetAsync("http://localhost:5205/api/Book/api/books");
+                var response = await _httpClient.GetAsync("http://localhost:5205/api/Book/SearchOrFilter");
                 response.EnsureSuccessStatusCode();
                 var bookResponse = await response.Content.ReadFromJsonAsync<Books[]>();
                 if (bookResponse == null)
@@ -240,11 +240,11 @@ namespace ApiMicroServices.Controllers
 
         [HttpGet]
         [Route("BooksPagination")]
-        public async Task<IActionResult> BooksPagination( int page, int pageSize)
+        public async Task<IActionResult> BooksPagination([FromQuery] int page, [FromQuery] int pageSize)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"http://localhost:5205/api/Book/BooksPagination"); 
+                var response = await _httpClient.GetAsync("http://localhost:5205/api/Book/BooksPagination"); 
                 response.EnsureSuccessStatusCode();
 
                 // Десериализация в объект ApiResponse
@@ -265,8 +265,6 @@ namespace ApiMicroServices.Controllers
             {
                 return StatusCode(500, $"Ошибка десериализации JSON: {ex.Message}");
             }
-
-
         }
         [HttpPut]
         [Route("UpdateBookImage/{ID_Book}")]
